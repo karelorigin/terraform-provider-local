@@ -8,7 +8,7 @@ description: |-
 
 # local_sticky_file (Resource)
 
-Generates a local file with given content and permissions. Unlike hashicorp/local.local_file, this resource makes sure that the file will always exist, even in environments such as Terraform Cloud, where disk state is not preserved.
+Generates a local file with given content and permissions. Unlike `hashicorp/local.local_file`, this resource makes sure that the file will always exist, even in environments such as Terraform Cloud, where disk state is not preserved.
 
 
 
@@ -22,6 +22,6 @@ Generates a local file with given content and permissions. Unlike hashicorp/loca
 
 ### Optional
 
-- `permissions` (String) The file permissions in numerc notation.
+- `permissions` (String) The file permissions in numeric notation.
 
 

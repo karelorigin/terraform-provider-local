@@ -2,7 +2,6 @@ package local
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"io/fs"
 	"io/ioutil"
@@ -92,12 +91,12 @@ func (r resourceLocalStickyFile) Read(ctx context.Context, req tfsdk.ReadResourc
 		}
 
 		_, err := os.Stat(file.Path.Value)
-		if !(err == nil || errors.Is(err, os.ErrNotExist)) {
+		if !(err == nil || os.IsNotExist(err)) {
 			return diag.NewErrorDiagnostic("could not verify whether path exists or not", err.Error())
 		}
 
 		// File already exists, skip
-		if !errors.Is(err, os.ErrNotExist) {
+		if os.IsExist(err) {
 			return nil
 		}
 
@@ -145,12 +144,12 @@ func (r resourceLocalStickyFile) Delete(ctx context.Context, req tfsdk.DeleteRes
 		}
 
 		_, err := os.Stat(file.Path.Value)
-		if err != nil {
+		if err != nil && !os.IsNotExist(err) {
 			return diag.NewErrorDiagnostic("could not verify whether path exists or not", err.Error())
 		}
 
 		// Delete file if it exists
-		if !errors.Is(err, os.ErrNotExist) {
+		if !os.IsNotExist(err) {
 			if err := os.Remove(file.Path.Value); err != nil {
 				return diag.NewErrorDiagnostic("unable to remove file from disk", err.Error())
 			}

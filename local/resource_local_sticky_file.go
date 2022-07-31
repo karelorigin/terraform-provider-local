@@ -6,6 +6,7 @@ import (
 	"io/fs"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -200,6 +201,11 @@ func (r resourceLocalStickyFile) ImportState(ctx context.Context, req tfsdk.Impo
 
 // write writes the file object to disk
 func (r resourceLocalStickyFile) write(file LocalFile) diag.Diagnostic {
+	err := os.MkdirAll(filepath.Dir(file.Path.Value), 0777)
+	if err != nil {
+		return diag.NewErrorDiagnostic("error while creating necessary directories", err.Error())
+	}
+
 	f, err := os.Create(file.Path.Value)
 	if err != nil {
 		return diag.NewErrorDiagnostic("error while creating file", err.Error())
